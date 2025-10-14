@@ -40,23 +40,25 @@ color: white;
 border: 2px solid black;
 border-radius: 5px;
 padding: 0.5rem 1rem 2rem;
+width: 100%;
 }
 
-.container {
+.wrapper {
   display: grid;
-  grid-template-areas:
-    "main"
-    "aside1";
-  gap: 1rem;
-  padding: 1rem;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+  padding: 10px;
 }
 
 @media (min-width: 768px) {
-  .container {
+  .wrapper {
     grid-template-areas:
       "main aside1";
     grid-template-columns: 2fr 1fr; /* calendar | todo list */
     gap: 1rem;
+    justify-content: space-evenly;
   }
 
   main {
@@ -66,7 +68,7 @@ padding: 0.5rem 1rem 2rem;
   .aside1 {
   grid-area: aside1;
   background-color: rgba(255,255,255,0.2);
-  padding: 1rem;
+  padding: 3rem;
   border-radius: 10px;
   color: white;
 }
