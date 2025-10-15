@@ -1,0 +1,183 @@
+
+body {
+  background: #fff5f7;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: lightsalmon;
+  padding: 20px 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 40px;
+}
+
+.top-left,
+.top-right {
+  display: flex;
+  align-items: center;
+}
+
+.topbar .mini {
+  background: #FF6B6B;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-right: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.topbar .title {
+  font-size: 32px;
+  color: white;
+  font-weight: bold;
+  letter-spacing: 2px;
+  flex: 1;
+  text-align: center;
+}
+
+/* Main layout */
+.layout {
+  display: flex;
+  gap: 20px;
+  padding: 15px;
+  flex: 1;
+  overflow: hidden;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Calendar panel */
+.calendar-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.calendar-shell {
+  background: #fd9e9ebf;
+  border-radius: 40px;
+  padding: 25px 30px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.month-title {
+  font-size: 42px;
+  color: #000;
+  font-weight: bold;
+  margin: 0;
+}
+
+.weekday-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  padding: 8px 0;
+  font-size: 15px;
+  color: white;
+  font-weight: bold;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 1px;
+  background: rgba(0, 0, 0, 0.15);
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  flex: 1;
+}
+
+.day-cell {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 8px;
+  font-size: 18px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.day-cell.today {
+  background: rgba(255, 255, 255, 0.6);
+  font-weight: bold;
+  color: #000;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 230px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.card {
+  background: #FF6B6B;
+  color: white;
+  border-radius: 20px;
+  padding: 16px;
+}
+
+.card-title {
+  font-size: 20px;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.graph-box {
+  background: white;
+  height: 120px;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-meta {
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.goal-list {
+  margin: 8px 0 0 18px;
+}
+
+/* Mobile responsive */
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+    padding: 10px;
+  }
+  
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+  }
+  
+  .month-title {
+    font-size: 32px;
+  }
+}

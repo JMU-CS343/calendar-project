@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Calendar Landing</title>
+  
+  <!-- Link to style files -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="calendar.css">
+  
+  <!-- Makes the page look good on mobile -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  
+  <!-- Set the font for the whole page -->
+  <style>body{font-family: 'Times New Roman', Times, serif;}</style>
+</head>
+<body>
+
+  <!-- Top navigation bar with buttons and title -->
+  <header class="topbar">
+    <!-- Left side buttons for view options -->
+    <div class="top-left">
+      <button class="mini">Monthly</button>
+      <button class="mini">Daily</button>
+      <button class="mini">Yearly</button>
+    </div>
+    
+    <!-- Center title showing the year -->
+    <div class="title" id="topYear">CALENDAR 2025</div>
+    
+    <!-- Right side buttons for actions -->
+    <div class="top-right">
+      <button class="mini">Add</button>
+      <button class="mini">Delete</button>
+      <button class="mini">Color</button>
+    </div>
+  </header>
+
+  <!-- Main layout with calendar and sidebar -->
+  <div class="layout">
+    
+    <!-- Calendar section -->
+    <main class="calendar-panel">
+      <div class="calendar-shell">
+        
+        <!-- Month and year display -->
+        <div class="calendar-header">
+          <div class="month-title" id="monthTitle">Month</div>
+        </div>
+
+        <!-- Days of the week labels -->
+        <div class="weekday-row">
+          <div>Sunday</div>
+          <div>Monday</div>
+          <div>Tuesday</div>
+          <div>Wednesday</div>
+          <div>Thursday</div>
+          <div>Friday</div>
+          <div>Saturday</div>
+        </div>
+
+        <!-- Grid of day numbers (filled by JavaScript) -->
+        <div class="days-grid" id="daysGrid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Right sidebar with cards -->
+    <aside class="sidebar">
+      
+      <!-- Productivity graph card -->
+      <div class="card graph">
+        <div class="card-title">Productivity Graph</div>
+        <div class="graph-box">
+          <!-- Simple line graph -->
+          <svg viewBox="0 0 100 70" preserveAspectRatio="none">
+            <polyline points="5,65 30,40 60,30 95,5" fill="none" stroke="#333" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Goals list card -->
+      <div class="card goals">
+        <div class="card-title">Goals</div>
+        <ul class="goal-list">
+          <li>• Test</li>
+          <li>• </li>
+          <li>• </li>
+          <li>• </li>
+          <li>• </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <!-- JavaScript to automatically update the calendar -->
+  <script>
+    // Get today's date
+    const now = new Date();
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    
+    // Update the month title and year in the top bar
+    document.getElementById('monthTitle').textContent = monthNames[now.getMonth()] + ' ' + now.getFullYear();
+    document.getElementById('topYear').textContent = 'CALENDAR ' + now.getFullYear();
+
+    // Figure out how many days this month has and what day it starts on
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const grid = document.getElementById('daysGrid');
+    
+    // Add empty cells before the first day of the month
+    for(let i = 0; i < firstDay; i++) grid.innerHTML += '<div class="day-cell"></div>';
+    
+    // Add cells for each day of the month
+    for(let d = 1; d <= daysInMonth; d++) {
+      const isToday = d === now.getDate() ? ' today' : '';
+      grid.innerHTML += `<div class="day-cell${isToday}">${d}</div>`;
+    }
+  </script>
+
+</body>
+</html>
