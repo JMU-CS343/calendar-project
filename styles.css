@@ -75,7 +75,6 @@ p {
 .aside1 h2,
 .aside2 h2 {
   font-size: 20px;
-  /* bigger heading text */
   margin-bottom: 1rem;
   text-align: center;
   font-weight: normal;
@@ -84,13 +83,9 @@ p {
 .aside1 hr,
 .aside2 hr {
   border: none;
-  /* remove default border */
   height: 1.5px;
-  /* thin line */
   background-color: black;
-  /* solid black line */
   margin: 10px 0;
-  /* spacing above/below */
 }
 
 .top {
@@ -150,7 +145,6 @@ li {
 
 }
 
-ul {list-style-type: none;}
 body {font-family: Verdana, sans-serif;}
 
 /* Month header */
