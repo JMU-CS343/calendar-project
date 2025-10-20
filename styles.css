@@ -38,7 +38,7 @@ main h1 {
 
 a {
   display: inline-block;
-  border: 2px outset black;
+  border: 2px outset rgba(255, 255, 255, 0.617);
   border-radius: 5px;
   background-color: lightsalmon;
   padding: 0.5rem 1rem;
