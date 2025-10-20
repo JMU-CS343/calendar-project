@@ -10,8 +10,8 @@
 <body>
     <div class="wrapper">
         <header class="top">
-            <div class="date"> Todays Date: 10/15/23</div>
-            <div class="weather">Todays Weather: sunny and 52 degrees</div>
+            <div class="date" id="monthTitle"></div>
+            <div class="weather">Weather: sunny and 52 degrees</div>
         </header>
         <main>
             <h1>Welcome!</h1>
@@ -33,4 +33,12 @@
             </ul>
         </aside>
     </div>
+
+    <script>
+        // Get today's date
+        const now = new Date();
+
+        // Update the month title and year in the top bar
+        document.getElementById('monthTitle').textContent = "Today: " + (now.getMonth() + 1) + '/' + now.getDate() + "/" +now.getFullYear();
+    </script>
 </body>

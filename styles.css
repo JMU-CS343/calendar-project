@@ -103,8 +103,19 @@ p {
 .date {
   margin-bottom: 5%;
   padding: 5px;
-  border:ridge lightsalmon;
+  border-radius: 8px;
   background-color: #ff9e9ebf;
+  color: white;
+  box-shadow: 0 0 3px;
+}
+
+.weather {
+  margin-bottom: 5%;
+  padding: 5px;
+  border-radius: 8px;
+  background-color: #ff9e9ebf;
+  color: white;
+  box-shadow: 0 0 3px;
 }
 
 li {
