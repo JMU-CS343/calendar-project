@@ -11,27 +11,27 @@
     <div class="wrapper">
         <header class="top">
             <div class="date" id="monthTitle"></div>
-            <div class="weather">Weather: sunny and 52 degrees</div>
-        </header>
-        <main>
-            <h1>Welcome!</h1>
-            <p>Plan, organize, and never miss a moment!</p>
-            <a href="calendar.html" class="btn">Let's get started</a>
-        </main>
-        <aside class="aside1">
-            <h2>To-do:</h2>
-            <hr>
-            <ul>
-                <li> number 1 testing</li>
-            </ul>
-        </aside>
-        <aside class="aside2">
-            <h2>Upcoming Events:</h2>
-            <hr>
-            <ul>
-                <li> number 1 testing</li>
-            </ul>
-        </aside>
+            <div class="weather" id="weather">Loading weather...</div>
+    </header>
+    <main>
+        <h1>Welcome!</h1>
+        <p>Plan, organize, and never miss a moment!</p>
+        <a href="calendar.html" class="btn">Let's get started</a>
+    </main>
+    <aside class="aside1">
+        <h2>To-do:</h2>
+        <hr>
+        <ul>
+            <li> number 1 testing</li>
+        </ul>
+    </aside>
+    <aside class="aside2">
+        <h2>Upcoming Events:</h2>
+        <hr>
+        <ul>
+            <li> number 1 testing</li>
+        </ul>
+    </aside>
     </div>
 
     <script>
@@ -39,6 +39,26 @@
         const now = new Date();
 
         // Update the month title and year in the top bar
-        document.getElementById('monthTitle').textContent = "Today: " + (now.getMonth() + 1) + '/' + now.getDate() + "/" +now.getFullYear();
+        document.getElementById('monthTitle').textContent = "Today: " + (now.getMonth() + 1) + '/' + now.getDate() + "/" + now.getFullYear();
+
+        //Request weather from Weatherstack API
+        async function getWeather() {
+            try {
+                const response = await fetch('https://api.weatherstack.com/current?access_key=28373e43bca10d6268b047502e989c8a&query=New York&units=f');
+                const data = await response.json();
+                if (data.error) {
+                    document.getElementById('weather').textContent = "Weather unavailable";
+                    return;
+                }
+                const description = data.current.weather_descriptions[0];
+                const temp = data.current.temperature;
+                document.getElementById('weather').textContent = `Weather: ${description} ${temp}`;
+            } catch (err) {
+                document.getElementById('weather').textContent = 'Error fetching the weather.';
+                console.error(err);
+            }
+        }
+
+        getWeather();
     </script>
 </body>
