@@ -132,6 +132,13 @@ li {
   padding: 10px;
 }
 
+dialog {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+
 /* Desktop View */
 @media (min-width: 768px) {
   .wrapper {
