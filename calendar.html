@@ -20,9 +20,9 @@
   <header class="topbar">
     <!-- Left side buttons for view options -->
     <div class="top-left">
-      <button class="mini">Monthly</button>
-      <button class="mini">Daily</button>
-      <button class="mini">Yearly</button>
+      <button class="mini" id="btn-monthly">Monthly</button>
+      <button class="mini" id="btn-daily">Daily</button>
+      <button class="mini" id="btn-yearly">Yearly</button>
     </div>
 
     <!-- Center title showing the year -->
@@ -30,9 +30,9 @@
 
     <!-- Right side buttons for actions -->
     <div class="top-right">
-      <button class="mini">Add</button>
-      <button class="mini">Delete</button>
-      <button class="mini">Color</button>
+      <button class="mini" id="btn-add">Add</button>
+      <button class="mini" id="btn-delete">Delete</button>
+      <button class="mini" id="btn-color">Color</button>
     </div>
   </header>
 
@@ -118,6 +118,19 @@
       grid.innerHTML += `<div class="day-cell${isToday}">${d}</div>`;
     }
   </script>
+  <dialog id="dlg-color">
+    <form method="dialog" class="color-form">
+      <h3>Main Color</h3>
+      <input type="color" id="mainColorPicker" name="mainColor" value="#ff0000">
+      <h3>Accent Color</h3>
+      <input type="color" id="accentColorPicker" name="accentColor" value="#00ff00">
+      <div class="dialog-buttons">
+        <button value="cancel">Cancel</button>
+        <button value="confirm">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+  <script src="main.js"></script>
 
 </body>
 </html>
