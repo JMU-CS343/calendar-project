@@ -44,7 +44,7 @@
         //Request weather from Weatherstack API
         async function getWeather() {
             try {
-                const response = await fetch('https://api.weatherstack.com/current?access_key=28373e43bca10d6268b047502e989c8a&query=New York&units=f');
+                const response = await fetch('https://api.weatherstack.com/current?access_key=28373e43bca10d6268b047502e989c8a&query=Virginia&units=f');
                 const data = await response.json();
                 if (data.error) {
                     document.getElementById('weather').textContent = "Weather unavailable";

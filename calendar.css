@@ -65,7 +65,8 @@ body {
   left: 5%;
   top: 19%;
   position: absolute;
-  box-shadow: none;
+  padding: 3px;
+  background-color: transparent;
 }
 
 /* Calendar panel */
