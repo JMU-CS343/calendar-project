@@ -58,6 +58,16 @@ body {
   width: 100%;
 }
 
+.weather {
+  display: flex;
+  box-sizing: border-box;
+  text-align: left;
+  left: 5%;
+  top: 19%;
+  position: absolute;
+  box-shadow: none;
+}
+
 /* Calendar panel */
 .calendar-panel {
   flex: 1;
