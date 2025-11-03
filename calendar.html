@@ -138,8 +138,20 @@
                 console.error(err);
             }
         }
-
         getWeather();
+
+        //Functionalities for Nav buttons: Daily ,Monthly, Yearly
+        const daily = document.getElementById('btn-daily');
+        daily.addEventListener('click', () => {
+        window.location.href = 'daily.html';});
+
+        const monthly = document.getElementById('btn-monthly');
+        monthly.addEventListener('click', () => {
+        window.location.href = 'monthly.html';});
+
+        const yearly = document.getElementById('btn-yearly');
+        yearly.addEventListener('click', () => {
+        window.location.href = 'yearly.html';});
 
   </script>
   <dialog id="dlg-color">
