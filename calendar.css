@@ -74,13 +74,13 @@ body {
 
 .weather {
   display: flex;
-  box-sizing: border-box;
-  text-align: left;
-  left: 5%;
-  top: 19%;
-  position: absolute;
-  padding: 3px;
-  background-color: transparent;
+  position: sticky;
+  align-items: center;
+  top: 0;
+  background: #fd9e9ebf;
+  padding: 10px;
+  margin: 0;
+  box-shadow: 0 4px 12px #f38888;
 }
 
 /* Calendar panel */
