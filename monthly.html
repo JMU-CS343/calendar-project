@@ -156,25 +156,6 @@
     // Initial render
     renderMonth();
 
-    // Weather API
-    async function getWeather() {
-      try {
-        const response = await fetch('https://api.weatherstack.com/current?access_key=28373e43bca10d6268b047502e989c8a&query=Virginia&units=f');
-        const data = await response.json();
-        if (data.error) {
-          document.getElementById('weather').textContent = "Weather unavailable";
-          return;
-        }
-        const description = data.current.weather_descriptions[0];
-        const temp = data.current.temperature;
-        document.getElementById('weather').textContent = `Weather: ${description} ${temp}°F`;
-      } catch (err) {
-        document.getElementById('weather').textContent = 'Error fetching the weather.';
-        console.error(err);
-      }
-    }
-    getWeather();
-
     // Navigation buttons
     document.getElementById('btn-daily').addEventListener('click', () => {
       window.location.href = 'daily.html';
