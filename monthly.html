@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Monthly Calendar View</title>
+
+  <!-- Link to style files -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="calendar.css">
+
+  <!-- Makes the page look good on mobile -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Set the font for the whole page -->
+  <style>body{font-family: 'Times New Roman', Times, serif;}</style>
+</head>
+<body>
+
+  <!-- Top navigation bar with buttons and title -->
+  <header class="topbar">
+    <!-- Left side buttons for view options -->
+    <div class="top-left">
+      <button class="mini" id="btn-monthly">Monthly</button>
+      <button class="mini" id="btn-daily">Daily</button>
+      <button class="mini" id="btn-yearly">Yearly</button>
+    </div>
+
+    <!-- Center title showing the year -->
+    <div class="title" id="topYear">CALENDAR 2025</div>
+
+    <!-- Right side buttons for actions -->
+    <div class="top-right">
+      <button class="mini" id="btn-add">Add</button>
+      <button class="mini" id="btn-delete">Delete</button>
+      <button class="mini" id="btn-color">Color</button>
+    </div>
+  </header>
+
+  <!-- Display weather -->
+  <div class="weather" id="weather">Loading Weather...</div>
+
+  <!-- Main layout with calendar and sidebar -->
+  <div class="layout">
+
+    <!-- Calendar section -->
+    <main class="calendar-panel">
+      <div class="calendar-shell">
+
+        <!-- Month and year display with navigation -->
+        <div class="calendar-header">
+          <div class="month-title" id="monthTitle">Month</div>
+          <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px;">
+            <button class="nav-btn" id="prevMonth">← Previous Month</button>
+            <button class="nav-btn" id="thisMonthBtn">This Month</button>
+            <button class="nav-btn" id="nextMonth">Next Month →</button>
+          </div>
+        </div>
+
+        <!-- Days of the week labels -->
+        <div class="weekday-row">
+          <div>Sunday</div>
+          <div>Monday</div>
+          <div>Tuesday</div>
+          <div>Wednesday</div>
+          <div>Thursday</div>
+          <div>Friday</div>
+          <div>Saturday</div>
+        </div>
+
+        <!-- Grid of day numbers (filled by JavaScript) -->
+        <div class="days-grid" id="daysGrid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Right sidebar with cards -->
+    <aside class="sidebar">
+
+      <!-- Productivity graph card -->
+      <div class="card graph">
+        <div class="card-title">Productivity Graph</div>
+        <div class="graph-box">
+          <!-- Simple line graph -->
+          <svg viewBox="0 0 100 70" preserveAspectRatio="none">
+            <polyline points="5,65 30,40 60,30 95,5" fill="none" stroke="#333" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Goals list card -->
+      <div class="card goals">
+        <div class="card-title">Goals</div>
+        <ul class="goal-list">
+          <li>Test</li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <!-- JavaScript to automatically update the calendar -->
+  <script>
+    // Current month state
+    let currentDate = new Date();
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+    function renderMonth() {
+      const today = new Date();
+      
+      // Update the month title and year in the top bar
+      document.getElementById('monthTitle').textContent = monthNames[currentDate.getMonth()] + ' ' + currentDate.getFullYear();
+      document.getElementById('topYear').textContent = 'CALENDAR ' + currentDate.getFullYear();
+
+      // Figure out how many days this month has and what day it starts on
+      const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+      const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+      const grid = document.getElementById('daysGrid');
+      
+      // Clear existing grid
+      grid.innerHTML = '';
+
+      // Add empty cells before the first day of the month
+      for(let i = 0; i < firstDay; i++) {
+        grid.innerHTML += '<div class="day-cell"></div>';
+      }
+
+      // Add cells for each day of the month
+      for(let d = 1; d <= daysInMonth; d++) {
+        const isToday = (d === today.getDate() && 
+                        currentDate.getMonth() === today.getMonth() && 
+                        currentDate.getFullYear() === today.getFullYear()) ? ' today' : '';
+        grid.innerHTML += `<div class="day-cell${isToday}">${d}</div>`;
+      }
+    }
+
+    // Navigation buttons
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderMonth();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderMonth();
+    });
+
+    document.getElementById('thisMonthBtn').addEventListener('click', () => {
+      currentDate = new Date();
+      renderMonth();
+    });
+
+    // Initial render
+    renderMonth();
+
+    // Weather API
+    async function getWeather() {
+      try {
+        const response = await fetch('https://api.weatherstack.com/current?access_key=28373e43bca10d6268b047502e989c8a&query=Virginia&units=f');
+        const data = await response.json();
+        if (data.error) {
+          document.getElementById('weather').textContent = "Weather unavailable";
+          return;
+        }
+        const description = data.current.weather_descriptions[0];
+        const temp = data.current.temperature;
+        document.getElementById('weather').textContent = `Weather: ${description} ${temp}°F`;
+      } catch (err) {
+        document.getElementById('weather').textContent = 'Error fetching the weather.';
+        console.error(err);
+      }
+    }
+    getWeather();
+
+    // Navigation buttons
+    document.getElementById('btn-daily').addEventListener('click', () => {
+      window.location.href = 'daily.html';
+    });
+
+    document.getElementById('btn-monthly').addEventListener('click', () => {
+      window.location.href = 'monthly.html';
+    });
+
+    document.getElementById('btn-yearly').addEventListener('click', () => {
+      window.location.href = 'yearly.html';
+    });
+  </script>
+
+  <dialog id="dlg-color">
+    <form method="dialog" class="color-form">
+      <h3>Main Color</h3>
+      <input type="color" id="mainColorPicker" name="mainColor" value="#ff0000">
+      <h3>Accent Color</h3>
+      <input type="color" id="accentColorPicker" name="accentColor" value="#00ff00">
+      <div class="dialog-buttons">
+        <button value="cancel">Cancel</button>
+        <button value="confirm">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+  <script src="main.js"></script>
+
+</body>
+</html>

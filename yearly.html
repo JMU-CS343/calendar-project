@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Yearly Calendar View</title>
+
+  <!-- Link to style files -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="calendar.css">
+
+  <!-- Makes the page look good on mobile -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Set the font for the whole page -->
+  <style>
+    body { font-family: 'Times New Roman', Times, serif; }
+    
+    /* Yearly view specific styles */
+    .yearly-calendar {
+      background: #fd9e9ebf;
+      border-radius: 40px;
+      padding: 25px 30px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .year-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .year-title {
+      font-size: 42px;
+      color: #000;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .year-navigation {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .nav-btn {
+      background: #FF6B6B;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .nav-btn:hover {
+      background: #ff5252;
+    }
+
+    .months-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 10px;
+    }
+
+    .month-box {
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .month-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
+      text-align: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .mini-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      margin-bottom: 5px;
+    }
+
+    .mini-weekday {
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+      color: #666;
+    }
+
+    .mini-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      margin-bottom: 10px;
+    }
+
+    .mini-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #333;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .mini-day:hover {
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .mini-day.empty {
+      background: transparent;
+      cursor: default;
+    }
+
+    .mini-day.today {
+      background: #FF6B6B;
+      color: white;
+      font-weight: bold;
+    }
+
+    .events-area {
+      min-height: 60px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      padding: 8px;
+      font-size: 11px;
+      color: #333;
+    }
+
+    .event-item {
+      background: rgba(255, 107, 107, 0.3);
+      padding: 4px 6px;
+      margin-bottom: 4px;
+      border-radius: 3px;
+      border-left: 3px solid #FF6B6B;
+    }
+
+    @media (max-width: 1200px) {
+      .months-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .months-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top navigation bar with buttons and title -->
+  <header class="topbar">
+    <!-- Left side buttons for view options -->
+    <div class="top-left">
+      <button class="mini" id="btn-monthly">Monthly</button>
+      <button class="mini" id="btn-daily">Daily</button>
+      <button class="mini" id="btn-yearly">Yearly</button>
+    </div>
+
+    <!-- Center title showing the year -->
+    <div class="title" id="topYear">CALENDAR 2025</div>
+
+    <!-- Right side buttons for actions -->
+    <div class="top-right">
+      <button class="mini" id="btn-add">Add</button>
+      <button class="mini" id="btn-delete">Delete</button>
+      <button class="mini" id="btn-color">Color</button>
+    </div>
+  </header>
+
+  <!-- Display weather -->
+  <div class="weather" id="weather">Loading Weather...</div>
+
+  <!-- Main layout with calendar and sidebar -->
+  <div class="layout">
+
+    <!-- Yearly Calendar section -->
+    <main class="calendar-panel">
+      <div class="yearly-calendar">
+
+        <!-- Year title and navigation -->
+        <div class="year-header">
+          <div class="year-title" id="yearTitle">2025</div>
+          <div class="year-navigation">
+            <button class="nav-btn" id="prevYear">← Previous Year</button>
+            <button class="nav-btn" id="thisYearBtn">This Year</button>
+            <button class="nav-btn" id="nextYear">Next Year →</button>
+          </div>
+        </div>
+
+        <!-- Grid of 12 months -->
+        <div class="months-grid" id="monthsGrid">
+          <!-- Filled by JavaScript -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Right sidebar with cards -->
+    <aside class="sidebar">
+
+      <!-- Productivity graph card -->
+      <div class="card graph">
+        <div class="card-title">Productivity Graph</div>
+        <div class="graph-box">
+          <!-- Simple line graph -->
+          <svg viewBox="0 0 100 70" preserveAspectRatio="none">
+            <polyline points="5,65 30,40 60,30 95,5" fill="none" stroke="#333" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Goals list card -->
+      <div class="card goals">
+        <div class="card-title">Goals</div>
+        <ul class="goal-list">
+          <li>Test</li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <!-- JavaScript for yearly calendar -->
+  <script>
+    // Current year state
+    let currentYear = new Date().getFullYear();
+
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const weekdayShort = ["S", "M", "T", "W", "T", "F", "S"];
+
+    function renderYear() {
+      const today = new Date();
+      
+      // Update year title
+      document.getElementById('yearTitle').textContent = currentYear;
+      document.getElementById('topYear').textContent = 'CALENDAR ' + currentYear;
+
+      // Create months grid
+      const monthsGrid = document.getElementById('monthsGrid');
+      monthsGrid.innerHTML = '';
+
+      for (let month = 0; month < 12; month++) {
+        const monthBox = document.createElement('div');
+        monthBox.className = 'month-box';
+
+        // Month name
+        const monthName = document.createElement('div');
+        monthName.className = 'month-name';
+        monthName.textContent = monthNames[month];
+        monthBox.appendChild(monthName);
+
+        // Weekday headers
+        const weekdaysDiv = document.createElement('div');
+        weekdaysDiv.className = 'mini-weekdays';
+        weekdayShort.forEach(day => {
+          const dayDiv = document.createElement('div');
+          dayDiv.className = 'mini-weekday';
+          dayDiv.textContent = day;
+          weekdaysDiv.appendChild(dayDiv);
+        });
+        monthBox.appendChild(weekdaysDiv);
+
+        // Days grid
+        const daysDiv = document.createElement('div');
+        daysDiv.className = 'mini-days';
+
+        const firstDay = new Date(currentYear, month, 1).getDay();
+        const daysInMonth = new Date(currentYear, month + 1, 0).getDate();
+
+        // Empty cells before first day
+        for (let i = 0; i < firstDay; i++) {
+          const emptyDiv = document.createElement('div');
+          emptyDiv.className = 'mini-day empty';
+          daysDiv.appendChild(emptyDiv);
+        }
+
+        // Days of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dayDiv = document.createElement('div');
+          dayDiv.className = 'mini-day';
+          
+          // Check if this is today
+          if (day === today.getDate() && 
+              month === today.getMonth() && 
+              currentYear === today.getFullYear()) {
+            dayDiv.classList.add('today');
+          }
+          
+          dayDiv.textContent = day;
+          daysDiv.appendChild(dayDiv);
+        }
+
+        monthBox.appendChild(daysDiv);
+
+        // Events area
+        const eventsDiv = document.createElement('div');
+        eventsDiv.className = 'events-area';
+        eventsDiv.innerHTML = '<small>Events:</small>';
+        // You can add sample events here
+        // Example: eventsDiv.innerHTML += '<div class="event-item">Sample Event</div>';
+        monthBox.appendChild(eventsDiv);
+
+        monthsGrid.appendChild(monthBox);
+      }
+    }
+
+    // Navigation buttons
+    document.getElementById('prevYear').addEventListener('click', () => {
+      currentYear--;
+      renderYear();
+    });
+
+    document.getElementById('nextYear').addEventListener('click', () => {
+      currentYear++;
+      renderYear();
+    });
+
+    document.getElementById('thisYearBtn').addEventListener('click', () => {
+      currentYear = new Date().getFullYear();
+      renderYear();
+    });
+
+    // Initial render
+    renderYear();
+
+    // Weather API
+    async function getWeather() {
+      try {
+        const response = await fetch('https://api.weatherstack.com/current?access_key=28373e43bca10d6268b047502e989c8a&query=Virginia&units=f');
+        const data = await response.json();
+        if (data.error) {
+          document.getElementById('weather').textContent = "Weather unavailable";
+          return;
+        }
+        const description = data.current.weather_descriptions[0];
+        const temp = data.current.temperature;
+        document.getElementById('weather').textContent = `Weather: ${description} ${temp}°F`;
+      } catch (err) {
+        document.getElementById('weather').textContent = 'Error fetching the weather.';
+        console.error(err);
+      }
+    }
+    getWeather();
+
+    // Navigation buttons
+    const daily = document.getElementById('btn-daily');
+    daily.addEventListener('click', () => {
+      window.location.href = 'daily.html';
+    });
+
+    const monthly = document.getElementById('btn-monthly');
+    monthly.addEventListener('click', () => {
+      window.location.href = 'monthly.html';
+    });
+
+    const yearly = document.getElementById('btn-yearly');
+    yearly.addEventListener('click', () => {
+      window.location.href = 'yearly.html';
+    });
+  </script>
+
+  <dialog id="dlg-color">
+    <form method="dialog" class="color-form">
+      <h3>Main Color</h3>
+      <input type="color" id="mainColorPicker" name="mainColor" value="#ff0000">
+      <h3>Accent Color</h3>
+      <input type="color" id="accentColorPicker" name="accentColor" value="#00ff00">
+      <div class="dialog-buttons">
+        <button value="cancel">Cancel</button>
+        <button value="confirm">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+  <script src="main.js"></script>
+
+</body>
+</html>

@@ -37,6 +37,20 @@ body {
   font-size: 15px;
 }
 
+.nav-btn {
+  background: #FF6B6B;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.nav-btn:hover {
+  background: #ff5252;
+}
+
 .topbar .title {
   font-size: 32px;
   color: white;
