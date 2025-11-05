@@ -80,7 +80,7 @@ body {
   background: #fd9e9ebf;
   padding: 10px;
   margin: 0;
-  box-shadow: 0 4px 12px #f38888;
+  box-shadow: 0 4px 12px #fd9e9ebf;
 }
 
 /* Calendar panel */
@@ -263,7 +263,7 @@ body {
 }
 
 /* Mobile responsive */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .layout {
     flex-direction: column;
     padding: 10px;

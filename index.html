@@ -11,27 +11,42 @@
     <div class="wrapper">
         <header class="top">
             <div class="date" id="monthTitle"></div>
-            <div class="weather" id="weather">Loading weather...</div>
-    </header>
-    <main>
-        <h1>Welcome!</h1>
-        <p>Plan, organize, and never miss a moment!</p>
-        <a href="calendar.html" class="btn">Let's get started</a>
-    </main>
-    <aside class="aside1">
-        <h2>To-do:</h2>
-        <hr>
-        <ul>
-            <li> number 1 testing</li>
-        </ul>
-    </aside>
-    <aside class="aside2">
-        <h2>Upcoming Events:</h2>
-        <hr>
-        <ul>
-            <li> number 1 testing</li>
-        </ul>
-    </aside>
+            <div class="weather" id="weather">
+                <img id="weather-icon" alt="Weather Icon">
+                <span id="weather-temp">Loading weather...</span>
+            </div>
+        </header>
+        <main>
+            <h1>Welcome!</h1>
+            <p>Plan, organize, and never miss a moment!</p>
+            <a href="calendar.html" class="btn">Let's get started</a>
+        </main>
+        <aside class="aside1">
+            <h2>To-do:</h2>
+            <hr>
+            <ul>
+                <li> number 1 testing</li>
+            </ul>
+        </aside>
+        <aside class="aside2">
+            <h2>Upcoming Events:</h2>
+            <hr>
+            <ul>
+                <li> number 1 testing</li>
+            </ul>
+        </aside>
+        <div class="quote">
+            <h2>Quote of the day:</h2>
+            <form id="quote-form">
+                <div class="quote-input-wrapper">
+                    <textarea id="quote-input" placeholder="Type your quote here :)" rows="4"></textarea>
+                </div>
+                <div class="quote-buttons">
+                    <button type="submit">Save</button>
+                    <button type="button" id="clear-quote">Clear</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -42,23 +57,33 @@
         document.getElementById('monthTitle').textContent = "Today: " + (now.getMonth() + 1) + '/' + now.getDate() + "/" + now.getFullYear();
 
         //Request weather from Weatherstack API
-        async function getWeather() {
+        async function getWeather(lat, lon) {
             try {
-                const response = await fetch('https://api.weatherstack.com/current?access_key=28373e43bca10d6268b047502e989c8a&query=Virginia&units=f');
-                const data = await response.json();
-                if (data.error) {
-                    document.getElementById('weather').textContent = "Weather unavailable";
-                    return;
-                }
-                const description = data.current.weather_descriptions[0];
-                const temp = data.current.temperature;
-                document.getElementById('weather').textContent = `Weather: ${description} ${temp}`;
+                const pointsRes = await fetch(`https://api.weather.gov/points/${lat},${lon}`, {
+                    headers: { 'User-Agent': 'CalendarApp mustangurl01@outlook.com' }
+                });
+                if (!pointsRes.ok) throw new Error("Failed to get points data");
+                const pointsData = await pointsRes.json();
+
+                const forecastUrl = pointsData.properties.forecast;
+                const forecastRes = await fetch(forecastUrl, {
+                    headers: { 'User-Agent': 'CalendarApp mustangurl01@outlook.com' }
+                });
+                if (!forecastRes.ok) throw new Error("Failed to get forecast data");
+                const forecastData = await forecastRes.json();
+
+                const period = forecastData.properties.periods[0];
+                document.getElementById('weather-icon').src = period.icon;
+                document.getElementById('weather-temp').textContent = `${period.temperature}°${period.temperatureUnit}`;
+                document.getElementById('weather-temp').title = period.shortForecast;
+
             } catch (err) {
-                document.getElementById('weather').textContent = 'Error fetching the weather.';
-                console.error(err);
+                console.error("Weather fetch error:", err);
+                document.getElementById('weather').textContent = "N/A";
             }
         }
 
-        getWeather();
+        // Example: Washington DC
+        getWeather(38.4496, -78.8689);
     </script>
 </body>
