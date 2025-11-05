@@ -14,7 +14,7 @@
   <!-- Set the font for the whole page -->
   <style>
     body { font-family: 'Times New Roman', Times, serif; }
-    
+
     /* Daily view specific styles */
     .daily-calendar {
       background: #fd9e9ebf;
@@ -210,7 +210,7 @@
 
       <!-- Goals list card -->
       <div class="card goals">
-        <div class="card-title">Goals</div>
+        <div class="card-title">To-Do:</div>
         <ul class="goal-list">
           <li>Test</li>
           <li></li>
@@ -232,7 +232,7 @@
 
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-    
+
     // Hours to display (6 AM to 10 PM)
     const startHour = 6;
     const endHour = 22;
@@ -244,9 +244,9 @@
       // Update week title
       const weekEnd = new Date(currentWeekStart);
       weekEnd.setDate(weekEnd.getDate() + 6);
-      document.getElementById('weekTitle').textContent = 
+      document.getElementById('weekTitle').textContent =
         `${monthNames[currentWeekStart.getMonth()]} ${currentWeekStart.getDate()} - ${monthNames[weekEnd.getMonth()]} ${weekEnd.getDate()}, ${currentWeekStart.getFullYear()}`;
-      
+
       document.getElementById('topYear').textContent = 'CALENDAR ' + currentWeekStart.getFullYear();
 
       // Create day headers
@@ -261,7 +261,7 @@
         const date = new Date(currentWeekStart);
         date.setDate(date.getDate() + i);
         const isToday = date.getTime() === today.getTime();
-        
+
         const dayHeader = document.createElement('div');
         dayHeader.className = 'day-column' + (isToday ? ' today-header' : '');
         dayHeader.innerHTML = `${dayNames[i]}<br>${date.getDate()}`;
@@ -286,7 +286,7 @@
           const date = new Date(currentWeekStart);
           date.setDate(date.getDate() + i);
           const isToday = date.getTime() === today.getTime();
-          
+
           const cell = document.createElement('div');
           cell.className = 'schedule-cell' + (isToday ? ' today' : '');
           cell.dataset.date = date.toISOString().split('T')[0];
