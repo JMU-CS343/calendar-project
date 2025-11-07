@@ -42,7 +42,7 @@
                     <textarea id="quote-input" placeholder="Type your quote here :)" rows="4"></textarea>
                 </div>
                 <div class="quote-buttons">
-                    <button type="submit">Save</button>
+                    <button type="submit" id="save">Save</button>
                     <button type="button" id="clear-quote">Clear</button>
                 </div>
             </form>
@@ -82,8 +82,29 @@
                 document.getElementById('weather').textContent = "N/A";
             }
         }
+        getWeather(38.4460, -78.8698);
 
-        // Example: Washington DC
-        getWeather(38.4496, -78.8689);
+        const form = document.getElementById("quote-form");
+        const input = document.getElementById("quote-input");
+        const clearBtn = document.getElementById("clear-quote");
+
+        if (localStorage.getItem("quote")) {
+            input.value = localStorage.getItem("quote");
+        }
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+            const text = input.value;
+            if (text.length > 0) {
+                localStorage.setItem("quote", text);
+            }
+        });
+
+        clearBtn.addEventListener("click", function() {
+            input.value = "";
+            localStorage.removeItem("quote");
+        });
+
+
     </script>
 </body>

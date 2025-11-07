@@ -147,22 +147,38 @@ dialog {
 
 .quote {
   display: grid;
-  text-align: center;
-  background-color: #fd9e9ebf;
-  color: white;
   width: 100%;
+  justify-self: end;
+  text-align: center;
+  background-color: #FF6B6B;
+  color: white;
   padding: 20px;
+  border: none;
   border-radius: 8px;
-  box-shadow: 0 0 3px;
+}
+
+.quote h2 {
+  font-weight: lighter;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
 #quote-input {
-  width: 100%;
+  background-color: #ff9e9ebf;
+  color: white;
+  height: 20px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: none;
+  font-size: 1rem;
+  text-align: center;
 }
 
-/* Desktop View */
+#quote-input::placeholder{
+  color: white;
+}
+
+/* Mobile View */
 @media (min-width: 768px) {
   .wrapper {
     grid-template-areas:
