@@ -37,6 +37,7 @@
         </aside>
         <div class="quote">
             <h2>Quote of the day:</h2>
+            <div id="quote-display"></div>
             <form id="quote-form">
                 <div class="quote-input-wrapper">
                     <textarea id="quote-input" placeholder="Type your quote here :)" rows="4"></textarea>
@@ -79,13 +80,14 @@
 
             } catch (err) {
                 console.error("Weather fetch error:", err);
-                document.getElementById('weather').textContent = "N/A";
+                document.getElementById('weather').textContent = "Weather: Unable to display the weather";
             }
         }
         getWeather(38.4460, -78.8698);
 
         const form = document.getElementById("quote-form");
         const input = document.getElementById("quote-input");
+        const display = document.getElementById("quote-display");
         const clearBtn = document.getElementById("clear-quote");
 
         if (localStorage.getItem("quote")) {
