@@ -49,6 +49,15 @@ a {
   cursor: pointer;
 }
 
+a:hover,
+a:focus {
+  background-color: #fd9e9ebf;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  transition: all 0.2s ease;
+}
+
+
 p {
   font-size: 1.6rem;
   margin: 20px;
@@ -174,7 +183,7 @@ dialog {
   text-align: center;
 }
 
-#quote-input::placeholder{
+#quote-input::placeholder {
   color: white;
 }
 

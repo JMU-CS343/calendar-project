@@ -60,6 +60,17 @@ body {
   text-align: center;
 }
 
+/* Focus and hover states for nav buttons */
+.topbar .mini:hover,
+.topbar .mini:focus {
+  background: #ff5252;
+  outline: 2px solid white;
+  outline-offset: 2px;
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+
 /* Main layout */
 .layout {
   display: flex;
