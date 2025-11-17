@@ -198,35 +198,73 @@ body {
   font-size: 12px;
 }
 
-.To-do-list {
-  margin: 8px 0 0 18px;
-  list-style-type: none;
+/* To-do list*/
+
+.card.goals .card-title {
+  display: flex;
+  justify-content: space-between; /* pushes buttons to the right */
+  align-items: center;
+  font-size: 20px;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
 }
 
-#to-do-checkbox {
-  margin-right: 10px;
-  color: pink;
-}
-
-#btn-add-to-do {
+.card.goals .card-title button {
+  margin-left: 8px;
   background: lightsalmon;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
 }
 
-#btn-delete-to-do {
-  background: lightsalmon;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
+.To-do-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
 }
+
+.To-do-list li.checked span {
+  text-decoration: line-through;
+  text-decoration-color: black;
+  color: white;
+}
+
+.To-do-list input[type="checkbox"] {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 2px solid white;
+  border-radius: 4px;
+  background: #fd9e9ebf;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.To-do-list input[type="checkbox"]:checked::after {
+  content: "◡̈";
+  color: white;
+  font-size: 16px;
+  position: absolute;
+  top: 0;
+  left: 3px;
+}
+
+/* Focus and hover states for nav buttons */
+.card.goals .card-title button:hover {
+  background: rgb(252, 119, 67);
+  outline: 2px solid white;
+  outline-offset: 2px;
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
 
 /* Month header */
 .month {

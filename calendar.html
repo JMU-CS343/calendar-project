@@ -174,34 +174,65 @@
     });
 
     //Functionality for To-Do List Add Button
+
     const toDoList = document.querySelector('.To-do-list');
     const addToDoBtn = document.getElementById('btn-add-to-do');
-    const inputToDo = document.getElementById('to-do-input');
     const deleteCheckedToDo = document.getElementById('btn-delete-to-do');
-    addToDoBtn.addEventListener('click', () => {
-      const task = inputToDo.value.trim();
-      const checked = inputToDo.checked;
-      if (task) {
+    const inputToDo = document.getElementById('to-do-input');
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+
+    function renderTasks() {
+      toDoList.innerHTML = '';
+      tasks.forEach((task, index) => {
         const li = document.createElement('li');
         const checkbox = document.createElement('input');
-        checkbox.id = 'to-do-checkbox';
         checkbox.type = 'checkbox';
+        checkbox.checked = task.done || false;
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = task.text;
+
+        // Apply strikethrough if checked
+        if (checkbox.checked) li.classList.add('checked');
+
+        // When checkbox changes
+        checkbox.addEventListener('change', () => {
+          task.done = checkbox.checked;
+          if (task.done) {
+            li.classList.add('checked');
+          } else {
+            li.classList.remove('checked');
+          }
+          localStorage.setItem('tasks', JSON.stringify(tasks));
+        });
+
         li.appendChild(checkbox);
-        li.appendChild(document.createTextNode(task));
+        li.appendChild(textSpan);
         toDoList.appendChild(li);
-        inputToDo.value = '';
-      }
+      });
+    }
+    addToDoBtn.addEventListener('click', () => {
+      const taskText = inputToDo.value.trim();
+      if (!taskText) return;
+      tasks.push({ text: taskText, done: false });
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      inputToDo.value = '';
+      renderTasks();
     });
 
     deleteCheckedToDo.addEventListener('click', () => {
-      const items = toDoList.querySelectorAll('li');
-      items.forEach(item => {
-        const checkbox = item.querySelector('input[type="checkbox"]');
-        if (checkbox && checkbox.checked) {
-          toDoList.removeChild(item);
-        }
-      });
+      tasks = tasks.filter(task => !task.done);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      renderTasks();
     });
+
+    //enter creates new task
+    inputToDo.addEventListener('keypress', (e) => {
+      if (e.key === "Enter") addToDoBtn.click();
+    });
+
+    renderTasks();
 
   </script>
   <dialog id="dlg-color">
