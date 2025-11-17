@@ -92,15 +92,14 @@
         </div>
       </div>
 
-      <!-- Goals list card -->
+      <!-- To-do list card -->
       <div class="card goals">
-        <div class="card-title">To-Do:</div>
-        <ul class="goal-list">
-          <li> Test</li>
-          <li> </li>
-          <li> </li>
-          <li> </li>
-          <li> </li>
+        <div class="card-title">To-Do:
+          <button class="mini" id="btn-add-to-do">Add</button>
+          <button class="mini" id="btn-delete-to-do">Delete</button>
+        </div>
+        <input type="text" class="mini" id="to-do-input" placeholder="Type new task...">
+        <ul class="To-do-list">
         </ul>
       </div>
     </aside>
@@ -172,6 +171,36 @@
     const yearly = document.getElementById('btn-yearly');
     yearly.addEventListener('click', () => {
       window.location.href = 'yearly.html';
+    });
+
+    //Functionality for To-Do List Add Button
+    const toDoList = document.querySelector('.To-do-list');
+    const addToDoBtn = document.getElementById('btn-add-to-do');
+    const inputToDo = document.getElementById('to-do-input');
+    const deleteCheckedToDo = document.getElementById('btn-delete-to-do');
+    addToDoBtn.addEventListener('click', () => {
+      const task = inputToDo.value.trim();
+      const checked = inputToDo.checked;
+      if (task) {
+        const li = document.createElement('li');
+        const checkbox = document.createElement('input');
+        checkbox.id = 'to-do-checkbox';
+        checkbox.type = 'checkbox';
+        li.appendChild(checkbox);
+        li.appendChild(document.createTextNode(task));
+        toDoList.appendChild(li);
+        inputToDo.value = '';
+      }
+    });
+
+    deleteCheckedToDo.addEventListener('click', () => {
+      const items = toDoList.querySelectorAll('li');
+      items.forEach(item => {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        if (checkbox && checkbox.checked) {
+          toDoList.removeChild(item);
+        }
+      });
     });
 
   </script>

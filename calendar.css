@@ -198,8 +198,34 @@ body {
   font-size: 12px;
 }
 
-.goal-list {
+.To-do-list {
   margin: 8px 0 0 18px;
+  list-style-type: none;
+}
+
+#to-do-checkbox {
+  margin-right: 10px;
+  color: pink;
+}
+
+#btn-add-to-do {
+  background: lightsalmon;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#btn-delete-to-do {
+  background: lightsalmon;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 /* Month header */
