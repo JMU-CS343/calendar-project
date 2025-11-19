@@ -247,6 +247,28 @@
       </div>
     </form>
   </dialog>
+  
+  <dialog id="dlg-add-event">
+    <form method="dialog" class="event-form">
+      <h3>Add New Event</h3>
+      <div class="form-group">
+        <label for="eventTitle">Event Title:</label>
+        <input type="text" id="eventTitle" name="eventTitle" required>
+      </div>
+      <div class="form-group">
+        <label for="eventDescription">Description:</label>
+        <textarea id="eventDescription" name="eventDescription" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="eventDate">Date:</label>
+        <input type="date" id="eventDate" name="eventDate" required>
+      </div>
+      <div class="dialog-buttons">
+        <button value="cancel">Cancel</button>
+        <button value="add" id="confirmAddEvent">Add Event</button>
+      </div>
+    </form>
+  </dialog>
   <script src="main.js"></script>
 
 </body>

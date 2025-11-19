@@ -31,8 +31,8 @@
         <aside class="aside2">
             <h2>Upcoming Events:</h2>
             <hr>
-            <ul>
-                <li> number 1 testing</li>
+            <ul id="upcoming-events-list">
+                <!-- Events will be populated by JavaScript -->
             </ul>
         </aside>
         <div class="quote">
@@ -107,6 +107,45 @@
             localStorage.removeItem("quote");
         });
 
+        // Load and display upcoming events
+        function loadUpcomingEvents() {
+            const events = JSON.parse(localStorage.getItem('calendarEvents')) || [];
+            const upcomingEventsList = document.getElementById('upcoming-events-list');
+            const today = new Date();
+            
+            // Filter events that are today or in the future
+            const upcomingEvents = events.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate >= today;
+            }).sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort by date
+            
+            if (upcomingEvents.length === 0) {
+                upcomingEventsList.innerHTML = '<li style="color: #666; font-style: italic;">No upcoming events</li>';
+                return;
+            }
+            
+            upcomingEventsList.innerHTML = upcomingEvents.slice(0, 5).map(event => {
+                const eventDate = new Date(event.date);
+                const formattedDate = eventDate.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                
+                return `
+                    <li>
+                        <strong>${event.title}</strong> - ${formattedDate}
+                        ${event.description ? `<br><small style="color: #666;">${event.description}</small>` : ''}
+                    </li>
+                `;
+            }).join('');
+        }
+        
+        // Load events when page loads
+        loadUpcomingEvents();
+        
+        // Refresh events every 30 seconds in case they're updated in another tab
+        setInterval(loadUpcomingEvents, 30000);
 
     </script>
 </body>
+</html>

@@ -1,4 +1,3 @@
-
 body {
   background: #fff5f7;
   margin: 0;
@@ -150,14 +149,62 @@ body {
   color: white;
   font-weight: bold;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  position: relative;
+  min-height: 80px;
 }
 
 .day-cell.today {
   background: rgba(255, 255, 255, 0.6);
   font-weight: bold;
   color: #000;
+}
+
+.day-number {
+  margin-bottom: 4px;
+}
+
+.day-events {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.event-item {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: normal;
+  cursor: pointer;
+  margin-bottom: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.event-item:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+.event-title {
+  font-weight: bold;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.event-desc {
+  font-size: 10px;
+  color: #666;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Sidebar */
@@ -352,4 +399,150 @@ body {
   .month-title {
     font-size: 32px;
   }
+}
+
+/* Event dialog styles */
+#dlg-add-event {
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: transparent;
+}
+
+.event-form {
+  background: #FF6B6B;
+  color: white;
+  padding: 24px;
+  border-radius: 12px;
+  min-width: 320px;
+}
+
+.event-form h3 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  text-align: center;
+  color: white;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: white;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: white;
+  background: white;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.dialog-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.dialog-buttons button[value="cancel"] {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.dialog-buttons button[value="add"] {
+  background: white;
+  color: #FF6B6B;
+}
+
+.dialog-buttons button:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Event display styles within calendar days */
+.day-cell {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 8px;
+  font-size: 18px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: relative;
+  min-height: 80px;
+}
+
+.day-number {
+  margin-bottom: 4px;
+}
+
+.day-events {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.event-item {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: normal;
+  cursor: pointer;
+  margin-bottom: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.event-item:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+.event-title {
+  font-weight: bold;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.event-desc {
+  font-size: 10px;
+  color: #666;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
