@@ -104,7 +104,6 @@ p {
   left: 10px;
   flex-direction: column;
   align-items: flex-start;
-  grid-area: weather;
   padding: 10px;
   color: white;
 }

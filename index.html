@@ -94,7 +94,7 @@
             input.value = localStorage.getItem("quote");
         }
 
-        form.addEventListener("submit", function(e) {
+        form.addEventListener("submit", function (e) {
             e.preventDefault();
             const text = input.value;
             if (text.length > 0) {
@@ -102,7 +102,7 @@
             }
         });
 
-        clearBtn.addEventListener("click", function() {
+        clearBtn.addEventListener("click", function () {
             input.value = "";
             localStorage.removeItem("quote");
         });
@@ -111,41 +111,41 @@
         function loadUpcomingEvents() {
             const events = JSON.parse(localStorage.getItem('calendarEvents')) || [];
             const upcomingEventsList = document.getElementById('upcoming-events-list');
-            const today = new Date();
-            
+            const today = new Date().toISOString().split("T")[0];
+
             // Filter events that are today or in the future
-            const upcomingEvents = events.filter(event => {
-                const eventDate = new Date(event.date);
-                return eventDate >= today;
-            }).sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort by date
-            
+            const upcomingEvents = events
+                .filter(event => event.date >= today)
+                .sort((a, b) => a.date.localeCompare(b.date));
+
             if (upcomingEvents.length === 0) {
-                upcomingEventsList.innerHTML = '<li style="color: #666; font-style: italic;">No upcoming events</li>';
+                upcomingEventsList.innerHTML = '<li style="color: white; font-style: italic;">No upcoming events</li>';
                 return;
             }
-            
+
             upcomingEventsList.innerHTML = upcomingEvents.slice(0, 5).map(event => {
                 const eventDate = new Date(event.date);
-                const formattedDate = eventDate.toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric' 
+                const formattedDate = eventDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
                 });
-                
+
                 return `
                     <li>
-                        <strong>${event.title}</strong> - ${formattedDate}
-                        ${event.description ? `<br><small style="color: #666;">${event.description}</small>` : ''}
+                        <strong>${event.title}</strong> - <span style="color: black;">${formattedDate}</span>
+                        ${event.description ? `<br><small style="color: white;">${event.description}</small>` : ''}
                     </li>
                 `;
             }).join('');
         }
-        
+
         // Load events when page loads
         loadUpcomingEvents();
-        
+
         // Refresh events every 30 seconds in case they're updated in another tab
         setInterval(loadUpcomingEvents, 30000);
 
     </script>
 </body>
+
 </html>
