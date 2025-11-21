@@ -25,7 +25,6 @@
             <h2>To-do:</h2>
             <hr>
             <ul>
-                <li> number 1 testing</li>
             </ul>
         </aside>
         <aside class="aside2">
@@ -144,6 +143,16 @@
 
         // Refresh events every 30 seconds in case they're updated in another tab
         setInterval(loadUpcomingEvents, 30000);
+
+    // Load and display to-do list
+    const toDoList = document.querySelector('.aside1 ul');
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    tasks.forEach(task => {
+        const li = document.createElement('li');
+        li.textContent = task.text;
+        toDoList.appendChild(li);
+    });
 
     </script>
 </body>
