@@ -44,7 +44,7 @@
 
   <!-- Display weather -->
   <div class="weather" id="weather">
-    <img id="weather-icon" alt="Weather icon" />
+    <img id="weather-icon" alt="Weather icon" aria-label="Current weather icon"/>
     <span id="weather-temp">Loading Weather...</span>
   </div>
 
@@ -146,6 +146,7 @@
 
         const period = forecastData.properties.periods[0];
         document.getElementById('weather-icon').src = period.icon;
+        document.getElementById('weather-icon').alt = period.shortForecast;
         document.getElementById('weather-temp').textContent = `${period.temperature}°${period.temperatureUnit}`;
         document.getElementById('weather-temp').title = period.shortForecast;
 

@@ -12,7 +12,7 @@
         <header class="top">
             <div class="date" id="monthTitle"></div>
             <div class="weather" id="weather">
-                <img id="weather-icon" alt="Weather Icon">
+                <img id="weather-icon" alt="current weather Icon" aria-label="Current weather icon">
                 <span id="weather-temp">Loading weather...</span>
             </div>
         </header>
@@ -39,11 +39,11 @@
             <div id="quote-display"></div>
             <form id="quote-form">
                 <div class="quote-input-wrapper">
-                    <textarea id="quote-input" placeholder="Type your quote here :)" rows="4"></textarea>
+                    <textarea id="quote-input" placeholder="Type your quote here :)" aria-label="Enter your quote of the day" rows="4"></textarea>
                 </div>
                 <div class="quote-buttons">
-                    <button type="submit" id="save">Save</button>
-                    <button type="button" id="clear-quote">Clear</button>
+                    <button type="submit" id="save" aria-label="Save quote of the day">Save</button>
+                    <button type="button" id="clear-quote" aria-label="Clear quote of the day">Clear</button>
                 </div>
             </form>
         </div>
@@ -74,6 +74,7 @@
 
                 const period = forecastData.properties.periods[0];
                 document.getElementById('weather-icon').src = period.icon;
+                document.getElementById('weather-icon').alt = period.shortForecast;
                 document.getElementById('weather-temp').textContent = `${period.temperature}°${period.temperatureUnit}`;
                 document.getElementById('weather-temp').title = period.shortForecast;
 
