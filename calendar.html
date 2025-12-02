@@ -50,33 +50,32 @@
 
   <!-- Main layout with calendar and sidebar -->
   <div class="layout">
+      <!-- Calendar section -->
+      <main class="calendar-panel">
+        <div class="calendar-shell">
 
-    <!-- Calendar section -->
-    <main class="calendar-panel">
-      <div class="calendar-shell">
+          <!-- Month and year display -->
+          <div class="calendar-header">
+            <div class="month-title" id="monthTitle">Month</div>
+          </div>
 
-        <!-- Month and year display -->
-        <div class="calendar-header">
-          <div class="month-title" id="monthTitle">Month</div>
+          <!-- Days of the week labels -->
+          <div class="weekday-row">
+            <div>Sunday</div>
+            <div>Monday</div>
+            <div>Tuesday</div>
+            <div>Wednesday</div>
+            <div>Thursday</div>
+            <div>Friday</div>
+            <div>Saturday</div>
+          </div>
+
+          <!-- Grid of day numbers (filled by JavaScript) -->
+          <div class="days-grid" id="daysGrid">
+            <!-- populated by JS -->
+          </div>
         </div>
-
-        <!-- Days of the week labels -->
-        <div class="weekday-row">
-          <div>Sunday</div>
-          <div>Monday</div>
-          <div>Tuesday</div>
-          <div>Wednesday</div>
-          <div>Thursday</div>
-          <div>Friday</div>
-          <div>Saturday</div>
-        </div>
-
-        <!-- Grid of day numbers (filled by JavaScript) -->
-        <div class="days-grid" id="daysGrid">
-          <!-- populated by JS -->
-        </div>
-      </div>
-    </main>
+      </main>
 
     <!-- Right sidebar with cards -->
     <aside class="sidebar">
