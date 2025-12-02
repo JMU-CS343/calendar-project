@@ -34,6 +34,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   font-size: 15px;
+  transition: all 0.2s ease;
 }
 
 .nav-btn {
@@ -66,7 +67,6 @@ body {
   outline: 2px solid white;
   outline-offset: 2px;
   transform: scale(1.05);
-  transition: all 0.2s ease;
 }
 
 /* Main layout */
