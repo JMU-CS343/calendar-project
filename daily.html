@@ -123,6 +123,28 @@
       background: rgba(255, 255, 255, 0.6);
     }
 
+    .schedule-event {
+      background: rgba(255, 107, 107, 0.7);
+      color: white;
+      padding: 4px 6px;
+      margin: 2px 0;
+      border-radius: 3px;
+      font-size: 11px;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .schedule-event strong {
+      display: block;
+      font-weight: bold;
+    }
+
+    .schedule-event small {
+      font-size: 10px;
+      opacity: 0.9;
+    }
+
     @media (max-width: 900px) {
       .days-header {
         grid-template-columns: 60px repeat(7, 1fr);
@@ -156,6 +178,16 @@
       <button class="mini" id="btn-add">Add</button>
       <button class="mini" id="btn-delete">Delete</button>
       <button class="mini" id="btn-color">Color</button>
+      <button class="mini" id="btn-help" title="Keyboard Shortcuts">?</button>
+      <div class="shortcuts-dropdown" id="shortcuts-dropdown">
+        <h4>Keyboard Shortcuts</h4>
+        <div class="shortcut-item"><kbd>Ctrl+A</kbd> Add Event</div>
+        <div class="shortcut-item"><kbd>Ctrl+D</kbd> Delete Mode</div>
+        <div class="shortcut-item"><kbd>Ctrl+1</kbd> Main Calendar</div>
+        <div class="shortcut-item"><kbd>Ctrl+2</kbd> Daily View</div>
+        <div class="shortcut-item"><kbd>Ctrl+3</kbd> Yearly View</div>
+        <div class="shortcut-item"><kbd>Ctrl+4</kbd> Monthly View</div>
+      </div>
     </div>
   </header>
 
@@ -239,7 +271,8 @@
     const startHour = 6;
     const endHour = 22;
 
-    function renderWeek() {
+    // Make renderWeek globally accessible for main.js
+    window.renderWeek = function renderWeek() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -250,6 +283,9 @@
         `${monthNames[currentWeekStart.getMonth()]} ${currentWeekStart.getDate()} - ${monthNames[weekEnd.getMonth()]} ${weekEnd.getDate()}, ${currentWeekStart.getFullYear()}`;
 
       document.getElementById('topYear').textContent = 'CALENDAR ' + currentWeekStart.getFullYear();
+
+      // Get events from localStorage (reload to get latest)
+      const events = JSON.parse(localStorage.getItem('calendarEvents')) || [];
 
       // Create day headers
       const daysHeader = document.getElementById('daysHeader');
@@ -288,11 +324,83 @@
           const date = new Date(currentWeekStart);
           date.setDate(date.getDate() + i);
           const isToday = date.getTime() === today.getTime();
+          const dateString = date.toISOString().split('T')[0];
 
           const cell = document.createElement('div');
           cell.className = 'schedule-cell' + (isToday ? ' today' : '');
-          cell.dataset.date = date.toISOString().split('T')[0];
+          cell.dataset.date = dateString;
           cell.dataset.hour = hour;
+
+          // Check for events on this date and hour
+          const dayEvents = events.filter(event => event.date === dateString);
+          
+          dayEvents.forEach(event => {
+            let shouldDisplay = false;
+            
+            // If event has specific time, only show in the appropriate hour slot
+            if (event.startTime) {
+              const startHour = parseInt(event.startTime.split(':')[0]);
+              const endHour = event.endTime ? parseInt(event.endTime.split(':')[0]) : startHour;
+              
+              // Show event if current hour is within the event's time range
+              if (hour >= startHour && hour <= endHour) {
+                shouldDisplay = true;
+              }
+            } else {
+              // All-day event: only show once at the first hour (6 AM)
+              if (hour === startHour) {
+                shouldDisplay = true;
+              }
+            }
+            
+            if (shouldDisplay) {
+              const eventDiv = document.createElement('div');
+              eventDiv.className = 'schedule-event';
+              
+              // Format time display
+              let timeDisplay = '';
+              if (event.startTime) {
+                const formatTime = (time24) => {
+                  const [h, m] = time24.split(':');
+                  const hour = parseInt(h);
+                  const ampm = hour >= 12 ? 'PM' : 'AM';
+                  const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                  return `${hour12}:${m} ${ampm}`;
+                };
+                
+                timeDisplay = formatTime(event.startTime);
+                if (event.endTime) {
+                  timeDisplay += ' - ' + formatTime(event.endTime);
+                }
+                timeDisplay = '<br><small>' + timeDisplay + '</small>';
+              }
+              
+              eventDiv.innerHTML = `<strong>${event.title}</strong>${timeDisplay}${event.description ? '<br><small>' + event.description + '</small>' : ''}`;
+              eventDiv.title = event.description || event.title;
+              eventDiv.setAttribute('data-event-id', event.id);
+              
+              // Add click handler for delete mode
+              eventDiv.addEventListener('click', (e) => {
+                // Check if delete mode is active (from main.js)
+                const deleteBtn = document.getElementById('btn-delete');
+                const isDeleteMode = deleteBtn && deleteBtn.textContent === 'Cancel';
+                
+                if (isDeleteMode) {
+                  e.stopPropagation();
+                  if (confirm(`Delete event "${event.title}"?`)) {
+                    // Reload events, filter out deleted one, save and re-render
+                    let allEvents = JSON.parse(localStorage.getItem('calendarEvents')) || [];
+                    allEvents = allEvents.filter(evt => evt.id !== event.id);
+                    localStorage.setItem('calendarEvents', JSON.stringify(allEvents));
+                    renderWeek();
+                  }
+                }
+              });
+              
+              cell.appendChild(eventDiv);
+            }
+          });
+
           scheduleGrid.appendChild(cell);
         }
       }
@@ -439,7 +547,46 @@
       </div>
     </form>
   </dialog>
+
+  <dialog id="dlg-add-event">
+    <form method="dialog" class="event-form">
+      <h3>Add New Event</h3>
+      <div class="form-group">
+        <label for="eventTitle">Event Title:</label>
+        <input type="text" id="eventTitle" name="eventTitle" required>
+      </div>
+      <div class="form-group">
+        <label for="eventDescription">Description:</label>
+        <textarea id="eventDescription" name="eventDescription" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="eventDate">Date:</label>
+        <input type="date" id="eventDate" name="eventDate" required>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="addSpecificTime" name="addSpecificTime">
+          Add specific time?
+        </label>
+      </div>
+      <div id="timeFields" style="display: none;">
+        <div class="form-group">
+          <label for="eventStartTime">Start Time:</label>
+          <input type="time" id="eventStartTime" name="eventStartTime">
+        </div>
+        <div class="form-group">
+          <label for="eventEndTime">End Time:</label>
+          <input type="time" id="eventEndTime" name="eventEndTime">
+        </div>
+      </div>
+      <div class="dialog-buttons">
+        <button value="cancel">Cancel</button>
+        <button value="add" id="confirmAddEvent">Add Event</button>
+      </div>
+    </form>
+  </dialog>
   <script src="main.js"></script>
+  <script src="notifications.js"></script>
 
 </body>
 </html>

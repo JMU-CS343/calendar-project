@@ -36,33 +36,65 @@ BTN_ADD.addEventListener("click", () => {
     document.getElementById('eventDate').value = todayString;
 });
 
+// Toggle time fields visibility
+document.addEventListener('DOMContentLoaded', () => {
+    const timeCheckbox = document.getElementById('addSpecificTime');
+    const timeFields = document.getElementById('timeFields');
+    
+    if (timeCheckbox && timeFields) {
+        timeCheckbox.addEventListener('change', (e) => {
+            timeFields.style.display = e.target.checked ? 'block' : 'none';
+        });
+    }
+});
+
 // Handle add event form submission
 DLG_ADD_EVENT.addEventListener("close", () => {
     if (DLG_ADD_EVENT.returnValue === "add") {
         const title = document.getElementById('eventTitle').value.trim();
         const description = document.getElementById('eventDescription').value.trim();
         const date = document.getElementById('eventDate').value;
+        const hasTime = document.getElementById('addSpecificTime').checked;
+        const startTime = hasTime ? document.getElementById('eventStartTime').value : null;
+        const endTime = hasTime ? document.getElementById('eventEndTime').value : null;
         
         if (title && date) {
             const newEvent = {
                 id: Date.now(), // Simple ID generation
                 title: title,
                 description: description,
-                date: date
+                date: date,
+                startTime: startTime,
+                endTime: endTime
             };
             
             events.push(newEvent);
             localStorage.setItem('calendarEvents', JSON.stringify(events));
             
-            // Clear form
-            document.getElementById('eventTitle').value = '';
-            document.getElementById('eventDescription').value = '';
-            document.getElementById('eventDate').value = '';
-            
-            // Re-render calendar to show new events
-            renderCalendarWithEvents();
+            // Refresh calendar view based on which page we're on
+            if (typeof renderCalendarWithEvents === 'function') {
+                renderCalendarWithEvents();
+            }
+            if (typeof renderMonth === 'function') {
+                renderMonth();
+            }
+            if (typeof renderWeek === 'function') {
+                renderWeek();
+            }
+            if (typeof renderYear === 'function') {
+                renderYear();
+            }
         }
     }
+    
+    // Always clear form when dialog closes (whether add or cancel)
+    document.getElementById('eventTitle').value = '';
+    document.getElementById('eventDescription').value = '';
+    document.getElementById('eventDate').value = '';
+    document.getElementById('addSpecificTime').checked = false;
+    document.getElementById('eventStartTime').value = '';
+    document.getElementById('eventEndTime').value = '';
+    document.getElementById('timeFields').style.display = 'none';
 });
 
 // Delete mode toggle
@@ -72,7 +104,19 @@ BTN_DELETE.addEventListener("click", () => {
     BTN_DELETE.style.backgroundColor = deleteMode ? "#ff6b6b" : "";
     
     if (!deleteMode) {
-        renderCalendarWithEvents(); // Refresh display when exiting delete mode
+        // Refresh display when exiting delete mode
+        if (typeof renderCalendarWithEvents === 'function') {
+            renderCalendarWithEvents();
+        }
+        if (typeof renderMonth === 'function') {
+            renderMonth();
+        }
+        if (typeof renderWeek === 'function') {
+            renderWeek();
+        }
+        if (typeof renderYear === 'function') {
+            renderYear();
+        }
     }
     
     // Update cursor style for day cells
@@ -128,7 +172,9 @@ function renderCalendarWithEvents() {
                     if (deleteMode) {
                         e.stopPropagation();
                         if (confirm(`Delete event "${event.title}"?`)) {
-                            events = events.filter(e => e.id !== event.id);
+                            // Reload events from localStorage to get latest data
+                            events = JSON.parse(localStorage.getItem('calendarEvents')) || [];
+                            events = events.filter(evt => evt.id !== event.id);
                             localStorage.setItem('calendarEvents', JSON.stringify(events));
                             renderCalendarWithEvents();
                         }

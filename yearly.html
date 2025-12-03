@@ -181,6 +181,16 @@
       <button class="mini" id="btn-add">Add</button>
       <button class="mini" id="btn-delete">Delete</button>
       <button class="mini" id="btn-color">Color</button>
+      <button class="mini" id="btn-help" title="Keyboard Shortcuts">?</button>
+      <div class="shortcuts-dropdown" id="shortcuts-dropdown">
+        <h4>Keyboard Shortcuts</h4>
+        <div class="shortcut-item"><kbd>Ctrl+A</kbd> Add Event</div>
+        <div class="shortcut-item"><kbd>Ctrl+D</kbd> Delete Mode</div>
+        <div class="shortcut-item"><kbd>Ctrl+1</kbd> Main Calendar</div>
+        <div class="shortcut-item"><kbd>Ctrl+2</kbd> Daily View</div>
+        <div class="shortcut-item"><kbd>Ctrl+3</kbd> Yearly View</div>
+        <div class="shortcut-item"><kbd>Ctrl+4</kbd> Monthly View</div>
+      </div>
     </div>
   </header>
 
@@ -249,7 +259,8 @@
     const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     const weekdayShort = ["S", "M", "T", "W", "T", "F", "S"];
 
-    function renderYear() {
+    // Make renderYear globally accessible for main.js
+    window.renderYear = function renderYear() {
       const today = new Date();
 
       // Update year title
@@ -464,7 +475,46 @@
       </div>
     </form>
   </dialog>
+
+  <dialog id="dlg-add-event">
+    <form method="dialog" class="event-form">
+      <h3>Add New Event</h3>
+      <div class="form-group">
+        <label for="eventTitle">Event Title:</label>
+        <input type="text" id="eventTitle" name="eventTitle" required>
+      </div>
+      <div class="form-group">
+        <label for="eventDescription">Description:</label>
+        <textarea id="eventDescription" name="eventDescription" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="eventDate">Date:</label>
+        <input type="date" id="eventDate" name="eventDate" required>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="addSpecificTime" name="addSpecificTime">
+          Add specific time?
+        </label>
+      </div>
+      <div id="timeFields" style="display: none;">
+        <div class="form-group">
+          <label for="eventStartTime">Start Time:</label>
+          <input type="time" id="eventStartTime" name="eventStartTime">
+        </div>
+        <div class="form-group">
+          <label for="eventEndTime">End Time:</label>
+          <input type="time" id="eventEndTime" name="eventEndTime">
+        </div>
+      </div>
+      <div class="dialog-buttons">
+        <button value="cancel">Cancel</button>
+        <button value="add" id="confirmAddEvent">Add Event</button>
+      </div>
+    </form>
+  </dialog>
   <script src="main.js"></script>
+  <script src="notifications.js"></script>
 
 </body>
 </html>
