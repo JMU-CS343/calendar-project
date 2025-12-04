@@ -221,3 +221,23 @@ dialog {
   }
 
 }
+
+/* Mobile View */
+@media (max-width: 767px) {
+  body {
+    display: block;       /* normal flow for scrolling */
+    justify-content: unset;
+    align-items: unset;
+  }
+
+  .top {
+    position: absolute; /* keep it absolute if needed */
+    top: 120px;          /* push it down */
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+    color: white;
+  }
+}
