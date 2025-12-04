@@ -84,6 +84,13 @@ DLG_ADD_EVENT.addEventListener("close", () => {
             if (typeof renderYear === 'function') {
                 renderYear();
             }
+            
+            // Apply event colors after rendering
+            setTimeout(() => {
+                if (typeof markOverdueEvents === 'function') {
+                    markOverdueEvents();
+                }
+            }, 100);
         }
     }
     
@@ -117,6 +124,13 @@ BTN_DELETE.addEventListener("click", () => {
         if (typeof renderYear === 'function') {
             renderYear();
         }
+        
+        // Apply event colors after rendering
+        setTimeout(() => {
+            if (typeof markOverdueEvents === 'function') {
+                markOverdueEvents();
+            }
+        }, 100);
     }
     
     // Update cursor style for day cells
@@ -196,5 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Small delay to ensure the original calendar rendering is complete
     setTimeout(() => {
         renderCalendarWithEvents();
+        // Apply event colors after rendering
+        if (typeof markOverdueEvents === 'function') {
+            markOverdueEvents();
+        }
     }, 100);
 });

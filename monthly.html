@@ -219,6 +219,13 @@
         
         grid.appendChild(dayCell);
       }
+      
+      // Apply event colors after rendering
+      setTimeout(() => {
+        if (typeof markOverdueEvents === 'function') {
+          markOverdueEvents();
+        }
+      }, 50);
     }
 
     // Navigation buttons

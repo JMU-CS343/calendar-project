@@ -2,7 +2,7 @@ body {
   background: #fff5f7;
   margin: 0;
   padding: 0;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   font-family: Verdana, sans-serif;
@@ -144,7 +144,7 @@ body {
   gap: 20px;
   padding: 15px;
   flex: 1;
-  overflow: hidden;
+  overflow: auto;
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
@@ -281,23 +281,66 @@ body {
   margin-top: 2px;
 }
 
-/* Late/overdue event styles */
-.event-item.overdue {
-  background: rgba(255, 87, 87, 0.9);
-  color: white;
-  border-color: rgba(255, 0, 0, 0.3);
+/* Default schedule event styling - white/light background for future events */
+.schedule-event {
+  background: rgba(255, 255, 255, 0.9);
 }
 
-.event-item.overdue .event-desc {
-  color: rgba(255, 255, 255, 0.9);
+/* Upcoming event styles - yellow (more than 1 hour away) */
+.event-item.upcoming,
+.schedule-event.upcoming {
+  background: rgba(255, 235, 59, 0.95) !important;
+  color: #000 !important;
+  border-color: rgba(255, 193, 7, 0.8);
+  font-weight: 500;
 }
 
-.event-item.overdue .event-time {
-  color: rgba(255, 255, 255, 0.95);
+.event-item.upcoming .event-desc,
+.event-item.upcoming .event-time,
+.schedule-event.upcoming small {
+  color: #000 !important;
 }
 
+/* Imminent event styles - red with pulse (1 hour or less, or happening now) */
+.event-item.imminent,
+.schedule-event.imminent {
+  background: rgba(244, 67, 54, 0.95) !important;
+  color: white !important;
+  border-color: rgba(211, 47, 47, 0.8);
+  animation: pulse 2s infinite;
+  font-weight: 600;
+}
+
+.event-item.imminent .event-desc,
+.event-item.imminent .event-time,
+.schedule-event.imminent small {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Pulse animation for imminent events */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* Late/overdue event styles - dark red (event has ended) */
+.event-item.overdue,
 .schedule-event.overdue {
-  background: rgba(255, 87, 87, 0.9) !important;
+  background: rgba(139, 0, 0, 0.95) !important;
+  color: white !important;
+  border-color: rgba(100, 0, 0, 0.8);
+  opacity: 0.85;
+  font-weight: 400;
+}
+
+.event-item.overdue .event-desc,
+.event-item.overdue .event-time,
+.schedule-event.overdue small {
+  color: rgba(255, 255, 255, 0.95) !important;
 }
 
 /* Notification popup */
@@ -374,44 +417,51 @@ body {
   .layout {
     flex-direction: column;
   }
-
+  
   .sidebar {
     width: 100%;
     max-width: none;
     order: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
   }
-
+  
   .calendar-panel {
     order: 1;
   }
-
+  
+  /* Ensure sidebar content is visible */
+  .card.goals,
+  .To-do-list {
+    display: block;
+  }
+  
   .topbar {
     flex-wrap: wrap;
     gap: 10px;
     padding: 10px 15px;
   }
-
+  
   .topbar .title {
     font-size: 20px;
     width: 100%;
     order: -1;
   }
-
+  
   .top-left,
   .top-right {
     width: 100%;
     justify-content: center;
     gap: 8px;
   }
-
+  
   .topbar .mini {
     padding: 8px 12px;
     font-size: 13px;
     margin-right: 5px;
   }
-}
-
-@media screen and (max-width: 600px) {
+}@media screen and (max-width: 600px) {
   body {
     font-size: 14px;
   }

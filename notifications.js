@@ -39,53 +39,95 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Check for upcoming and overdue events
+// Real-time event monitoring - checks every minute
 function checkUpcomingEvents() {
     const now = new Date();
-    const events = JSON.parse(localStorage.getItem('calendarEvents')) || [];
-    const upcomingEvents = [];
+    const events = JSON.parse(localStorage.getItem('calendarEvents')) || {};
+    const notifiedEvents = JSON.parse(localStorage.getItem('notifiedEvents')) || {};
     
     events.forEach(event => {
-        const eventDate = new Date(event.date);
+        if (!event.startTime) return; // Skip all-day events
         
-        if (event.startTime) {
-            const [hours, minutes] = event.startTime.split(':');
-            eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        // Parse event date correctly
+        const eventDateParts = event.date.split('-');
+        const eventStartTime = new Date(
+            parseInt(eventDateParts[0]),
+            parseInt(eventDateParts[1]) - 1,
+            parseInt(eventDateParts[2])
+        );
+        const [hours, minutes] = event.startTime.split(':');
+        eventStartTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        
+        const eventEndTime = new Date(
+            parseInt(eventDateParts[0]),
+            parseInt(eventDateParts[1]) - 1,
+            parseInt(eventDateParts[2])
+        );
+        if (event.endTime) {
+            const [endHours, endMinutes] = event.endTime.split(':');
+            eventEndTime.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
         } else {
-            eventDate.setHours(0, 0, 0, 0);
+            eventEndTime.setTime(eventStartTime.getTime() + 60 * 60 * 1000); // 1 hour default
         }
         
-        const timeDiff = eventDate - now;
-        const hoursDiff = timeDiff / (1000 * 60 * 60);
+        const timeDiffMs = eventStartTime - now;
+        const minutesDiff = timeDiffMs / (1000 * 60);
         
-        // Event is within the next 24 hours
-        if (hoursDiff > 0 && hoursDiff <= 24) {
-            upcomingEvents.push({
-                ...event,
-                hoursDiff: hoursDiff
-            });
+        // 1-hour reminder notification (between 59-61 minutes before)
+        if (minutesDiff > 59 && minutesDiff <= 61 && !notifiedEvents[event.id + '_reminder']) {
+            showReminderNotification(event);
+            notifiedEvents[event.id + '_reminder'] = true;
+            localStorage.setItem('notifiedEvents', JSON.stringify(notifiedEvents));
+        }
+        
+        // Late notification (event started but not ended)
+        if (now >= eventStartTime && now < eventEndTime && !notifiedEvents[event.id + '_started']) {
+            showLateNotification(event, 'started');
+            notifiedEvents[event.id + '_started'] = true;
+            localStorage.setItem('notifiedEvents', JSON.stringify(notifiedEvents));
+        }
+        
+        // Overdue notification (event ended)
+        if (now >= eventEndTime && !notifiedEvents[event.id + '_overdue']) {
+            showLateNotification(event, 'overdue');
+            notifiedEvents[event.id + '_overdue'] = true;
+            localStorage.setItem('notifiedEvents', JSON.stringify(notifiedEvents));
         }
     });
     
-    if (upcomingEvents.length > 0) {
-        showUpcomingNotification(upcomingEvents);
-    }
+    // Clean up old notifications (older than 24 hours)
+    cleanupOldNotifications();
     
-    // Mark overdue events
+    // Update event colors in real-time
     markOverdueEvents();
 }
 
-// Show notification popup for upcoming events
-function showUpcomingNotification(events) {
-    // Check if notification was already shown recently
-    const lastNotification = localStorage.getItem('lastNotificationTime');
-    const now = new Date().getTime();
-    
-    // Don't show notification if one was shown in the last hour
-    if (lastNotification && (now - parseInt(lastNotification)) < 60 * 60 * 1000) {
-        return;
+// Show 1-hour reminder notification
+function showReminderNotification(event) {
+    const notification = createNotificationPopup('⏰ Reminder', `
+        <p><strong>${event.title}</strong> starts in 1 hour</p>
+        <p>Time: ${event.startTime}${event.endTime ? ' - ' + event.endTime : ''}</p>
+        ${event.description ? `<p>${event.description}</p>` : ''}
+    `, '#FFD700');
+}
+
+// Show late/overdue notification
+function showLateNotification(event, type) {
+    if (type === 'started') {
+        const notification = createNotificationPopup('🔴 Event Started', `
+            <p><strong>${event.title}</strong> is happening now!</p>
+            <p>Time: ${event.startTime}${event.endTime ? ' - ' + event.endTime : ''}</p>
+        `, '#ff6b6b');
+    } else if (type === 'overdue') {
+        const notification = createNotificationPopup('⏰ Event Ended', `
+            <p><strong>${event.title}</strong> has ended</p>
+            <p>Time: ${event.startTime}${event.endTime ? ' - ' + event.endTime : ''}</p>
+        `, '#8b0000');
     }
-    
+}
+
+// Create notification popup with custom styling
+function createNotificationPopup(title, content, bgColor = '#FFD700') {
     // Remove existing notification if any
     const existingNotif = document.querySelector('.notification-popup');
     if (existingNotif) {
@@ -94,28 +136,15 @@ function showUpcomingNotification(events) {
     
     const notification = document.createElement('div');
     notification.className = 'notification-popup';
-    
-    let eventList = '';
-    events.slice(0, 3).forEach(event => {
-        const hours = Math.round(event.hoursDiff);
-        const timeText = hours < 1 ? 'Less than 1 hour' : `${hours} hour${hours > 1 ? 's' : ''}`;
-        eventList += `<p><strong>${event.title}</strong> - ${timeText}</p>`;
-    });
-    
-    if (events.length > 3) {
-        eventList += `<p><em>...and ${events.length - 3} more</em></p>`;
-    }
+    notification.style.borderLeft = `5px solid ${bgColor}`;
     
     notification.innerHTML = `
         <button class="close-btn" onclick="this.parentElement.remove()">×</button>
-        <h3>📅 Upcoming Events</h3>
-        ${eventList}
+        <h3>${title}</h3>
+        ${content}
     `;
     
     document.body.appendChild(notification);
-    
-    // Save notification time
-    localStorage.setItem('lastNotificationTime', now.toString());
     
     // Auto-remove after 10 seconds
     setTimeout(() => {
@@ -123,12 +152,33 @@ function showUpcomingNotification(events) {
             notification.remove();
         }
     }, 10000);
+    
+    return notification;
 }
 
-// Mark overdue events in red
+// Clean up old notification records
+function cleanupOldNotifications() {
+    const notifiedEvents = JSON.parse(localStorage.getItem('notifiedEvents')) || {};
+    const events = JSON.parse(localStorage.getItem('calendarEvents')) || [];
+    const eventIds = events.map(e => e.id);
+    
+    // Remove notifications for deleted events
+    Object.keys(notifiedEvents).forEach(key => {
+        const eventId = key.split('_')[0];
+        if (!eventIds.includes(parseInt(eventId))) {
+            delete notifiedEvents[key];
+        }
+    });
+    
+    localStorage.setItem('notifiedEvents', JSON.stringify(notifiedEvents));
+}
+
+// Mark events with color based on time proximity - LIVE UPDATES
 function markOverdueEvents() {
     const now = new Date();
     const events = JSON.parse(localStorage.getItem('calendarEvents')) || [];
+    
+    console.log('🔍 Marking events at:', now.toLocaleString());
     
     // Check each event on the page
     document.querySelectorAll('.event-item, .schedule-event').forEach(element => {
@@ -138,34 +188,89 @@ function markOverdueEvents() {
         const event = events.find(e => e.id == eventId);
         if (!event) return;
         
-        const eventDate = new Date(event.date);
+        // Remove all status classes first
+        element.classList.remove('overdue', 'imminent', 'upcoming');
         
-        if (event.endTime) {
-            const [hours, minutes] = event.endTime.split(':');
-            eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-        } else if (event.startTime) {
-            const [hours, minutes] = event.startTime.split(':');
-            eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        // For events with specific times
+        if (event.startTime) {
+            // Parse event date correctly (handle YYYY-MM-DD format)
+            const eventDateParts = event.date.split('-');
+            const eventStartTime = new Date(
+                parseInt(eventDateParts[0]), // year
+                parseInt(eventDateParts[1]) - 1, // month (0-indexed)
+                parseInt(eventDateParts[2]) // day
+            );
+            const [startHours, startMinutes] = event.startTime.split(':');
+            eventStartTime.setHours(parseInt(startHours), parseInt(startMinutes), 0, 0);
+            
+            const eventEndTime = new Date(
+                parseInt(eventDateParts[0]),
+                parseInt(eventDateParts[1]) - 1,
+                parseInt(eventDateParts[2])
+            );
+            if (event.endTime) {
+                const [endHours, endMinutes] = event.endTime.split(':');
+                eventEndTime.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
+            } else {
+                eventEndTime.setTime(eventStartTime.getTime() + 60 * 60 * 1000); // 1 hour default
+            }
+            
+            const timeDiffMs = eventStartTime - now;
+            const minutesDiff = timeDiffMs / (1000 * 60);
+            
+            console.log(`📅 Event: ${event.title}`);
+            console.log(`   Start: ${eventStartTime.toLocaleString()}`);
+            console.log(`   End: ${eventEndTime.toLocaleString()}`);
+            console.log(`   Minutes until start: ${minutesDiff.toFixed(1)}`);
+            
+            // OVERDUE: Event has ended (dark red)
+            if (now >= eventEndTime) {
+                element.classList.add('overdue');
+                console.log(`   ❌ OVERDUE (ended)`);
+            }
+            // IMMINENT: Event is happening now OR starts within 1 hour (red with pulse)
+            else if (now >= eventStartTime || (minutesDiff > 0 && minutesDiff <= 60)) {
+                element.classList.add('imminent');
+                console.log(`   🔴 IMMINENT (${now >= eventStartTime ? 'happening now' : 'within 1 hour'})`);
+            }
+            // UPCOMING: Event starts more than 1 hour away (yellow - for visibility)
+            else if (minutesDiff > 60) {
+                element.classList.add('upcoming');
+                console.log(`   🟡 UPCOMING (${(minutesDiff / 60).toFixed(1)} hours away)`);
+            }
         } else {
-            // All-day event - check if date has passed
+            // All-day events - check if date has passed
+            const eventDateParts = event.date.split('-');
+            const eventDate = new Date(
+                parseInt(eventDateParts[0]),
+                parseInt(eventDateParts[1]) - 1,
+                parseInt(eventDateParts[2])
+            );
             eventDate.setHours(23, 59, 59, 999);
-        }
-        
-        // If event time has passed, mark as overdue
-        if (eventDate < now) {
-            element.classList.add('overdue');
+            
+            if (eventDate < now) {
+                element.classList.add('overdue');
+                console.log(`📅 All-day event: ${event.title} - OVERDUE`);
+            }
         }
     });
+    
+    console.log('✅ Color marking complete\n');
 }
 
-// Initialize notifications and checks
+// Initialize real-time monitoring system
+
+// Initialize real-time monitoring system
 document.addEventListener('DOMContentLoaded', () => {
-    // Check for upcoming events after page loads
+    // Initial check immediately after page loads
     setTimeout(() => {
         checkUpcomingEvents();
-        // Check every 5 minutes
-        setInterval(checkUpcomingEvents, 5 * 60 * 1000);
-    }, 2000);
+    }, 500);
+    
+    // LIVE UPDATES: Check every 60 seconds for real-time color changes and notifications
+    setInterval(() => {
+        checkUpcomingEvents();
+    }, 60 * 1000);
     
     // Help button toggle
     const btnHelp = document.getElementById('btn-help');
